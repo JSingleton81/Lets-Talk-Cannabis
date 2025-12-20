@@ -1,0 +1,46 @@
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Global body styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f1fff0;  /* light cannabis green */
+  color: #222;
+  line-height: 1.6;
+}
+
+/* A nice default theme color */
+:root {
+  --primary-green: #3b7c3b;
+  --light-green: #e7ffe7;
+  --dark-green: #2a622a;
+}
+
+/* Reusable button style */
+.btn {
+  padding: 10px 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  background-color: var(--primary-green);
+  color: white;
+  font-size: 16px;
+}
+
+.btn:hover {
+  background-color: var(--dark-green);
+}
+
+/* Reusable input style */
+.input {
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #aaa;
+  width: 100%;
+  margin: 6px 0;
+}
