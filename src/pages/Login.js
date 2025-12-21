@@ -1,8 +1,9 @@
-// src/pages/Login.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import Input from "../components/Input"; // 🟢 Reusable Component
+import "../styles/Login.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -12,63 +13,112 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  // Environment variable with fallback
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
+  // Clear session data on mount to prevent stale state
+  useEffect(() => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate("/"); // redirect to Home
+      // 1. Authenticate with Firebase
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const firebaseUser = userCredential.user;
+
+      // 2. The Handshake: Sync with MySQL Backend
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: firebaseUser.email,
+          uid: firebaseUser.uid,
+        }),
+      });
+
+      // Handle cases where the server might return HTML (like 404 or crash pages)
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("Server error: Received non-JSON response. Check backend routes.");
+      }
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Backend login failed.");
+      }
+
+      // 3. Success: Store JWT and User Data
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      // 4. Redirect to dashboard
+      navigate("/dashboard");
+      
     } catch (err) {
-      setError(err.message);
+      console.error("🔥 Login sequence error:", err);
+      
+      if (err.message.includes("auth/invalid-credential") || err.message.includes("auth/user-not-found")) {
+        setError("Invalid email or password.");
+      } else {
+        setError(err.message || "An error occurred during login.");
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>Login</h1>
-      <form style={styles.form} onSubmit={handleLogin}>
-        <input
-          style={styles.input}
+    <div className="login-container">
+      <h1 className="login-title">Welcome Back</h1>
+      <p className="login-subtitle">Sign in to join the conversation.</p>
+
+      <form className="login-form" onSubmit={handleLogin}>
+        {/* 🟢 Reusable Input for Email */}
+        <Input
+          label="Email Address"
           type="email"
-          placeholder="Email"
+          placeholder="email@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <input
-          style={styles.input}
+
+        {/* 🟢 Reusable Input for Password */}
+        <Input
+          label="Password"
           type="password"
-          placeholder="Password"
+          placeholder="Enter your password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        {error && <p style={styles.error}>{error}</p>}
-        <button style={styles.button} type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
+
+        {error && <div className="error-box">{error}</div>}
+
+        <button 
+          className="login-button" 
+          type="submit" 
+          disabled={loading}
+        >
+          {loading ? "Verifying..." : "Sign In"}
         </button>
       </form>
+
+      <div className="login-footer">
+        Don't have an account?{" "}
+        <span className="login-link" onClick={() => navigate("/signup")}>
+          Create one here
+        </span>
+      </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    margin: "50px auto",
-    padding: "40px",
-    maxWidth: "400px",
-    textAlign: "center",
-    backgroundColor: "#f6fff0",
-    borderRadius: "10px",
-  },
-  title: { marginBottom: "20px", color: "#2a5c2a", fontSize: "24px" },
-  form: { display: "flex", flexDirection: "column", gap: "15px" },
-  input: { padding: "12px", borderRadius: "5px", border: "1px solid #ccc", fontSize: "16px" },
-  button: { padding: "12px", border: "none", borderRadius: "5px", backgroundColor: "#3b7c3b", color: "white", fontSize: "16px", cursor: "pointer" },
-  error: { color: "red", fontSize: "14px" },
 };
 
 export default Login;

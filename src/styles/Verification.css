@@ -1,0 +1,57 @@
+.verification-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 20px;
+  background-color: #f9fbf9;
+}
+
+.verification-card {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-top: 10px;
+}
+
+.status-badge.verified { background-color: #e6f4ea; color: #1e7e34; }
+.status-badge.pending { background-color: #fff3cd; color: #856404; }
+.status-badge.failed { background-color: #f8d7da; color: #721c24; }
+
+.instructions {
+  text-align: left;
+  background: #f1f8f1;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.instructions ul { padding-left: 20px; color: #444; }
+
+.dashboard-btn {
+  background-color: #2a5c2a;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.privacy-footer {
+  margin-top: 30px;
+  font-size: 0.85rem;
+  color: #888;
+}

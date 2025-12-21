@@ -1,20 +1,41 @@
 import React, { useState } from "react";
+import { auth } from "../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import Input from "../components/Input"; // 🟢 Reusable Component
+import "../styles/SignUp.css";
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [dob, setDob] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const API_URL = process.env.REACT_APP_API_URL; // e.g., http://localhost:5000/api
+  const navigate = useNavigate();
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
+  const getPasswordStrength = (pass) => {
+    if (!pass) return { score: 0, label: "", class: "" };
+    let score = 0;
+    if (pass.length > 6) score++;
+    if (/[A-Z]/.test(pass)) score++;
+    if (/[0-9]/.test(pass) || /[^A-Za-z0-9]/.test(pass)) score++;
+
+    if (score === 1) return { score, label: "Weak", class: "weak" };
+    if (score === 2) return { score, label: "Fair", class: "fair" };
+    if (score === 3) return { score, label: "Strong", class: "strong" };
+    return { score: 0, label: "", class: "" };
+  };
+
+  const strength = getPasswordStrength(password);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
     setError("");
 
-    // Calculate age
     const birthDate = new Date(dob);
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
@@ -22,28 +43,41 @@ const SignUp = () => {
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
 
     if (age < 21) {
-      setError("You must be 21 or older to sign up.");
+      setError("You must be 21 or older to join the community.");
+      return;
+    }
+
+    if (strength.score < 2) {
+      setError("Please choose a stronger password.");
       return;
     }
 
     try {
       setLoading(true);
-      const res = await fetch(`${API_URL}/auth/signup`, {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const firebaseUser = userCredential.user;
+
+      const res = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password, dob }),
+        body: JSON.stringify({
+          username,
+          email,
+          uid: firebaseUser.uid,
+          dob,
+        }),
       });
 
       const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Backend synchronization failed.");
 
-      if (!res.ok) throw new Error(data.message || "Signup failed");
-
-      alert("Account created successfully!");
-      setUsername("");
-      setEmail("");
-      setPassword("");
-      setDob("");
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        navigate("/dashboard");
+      }
     } catch (err) {
+      console.error("🔥 Signup Process Error:", err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -51,94 +85,91 @@ const SignUp = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>Let Talk Cannabis — Sign Up</h1>
+    <div className="signup-container">
+      {loading ? (
+        <div className="loading-state">
+          <h2 className="loading-title">🌿 Setting up your garden...</h2>
+          <p className="loading-subtitle">Syncing your profile and preparing your dashboard.</p>
+          <div className="spinner"></div>
+        </div>
+      ) : (
+        <>
+          <h1 className="signup-title">Join the Community</h1>
+          <p className="signup-subtitle">Connect with others and share your experience.</p>
 
-      <form style={styles.form} onSubmit={handleSignUp}>
-        <input
-          style={styles.input}
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
+          <form className="signup-form" onSubmit={handleSignUp}>
+            {/* 🟢 Using your new Input component for Username */}
+            <Input
+              label="Username"
+              placeholder="Pick a community name"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
 
-        <input
-          style={styles.input}
-          type="email"
-          placeholder="Email Address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+            {/* 🟢 Using your new Input component for Email */}
+            <Input
+              label="Email Address"
+              type="email"
+              placeholder="email@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
 
-        <input
-          style={styles.input}
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+            {/* Password section with custom toggle logic */}
+            <div className="password-wrapper">
+              <Input
+                label="Password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Choose a password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className="hide-toggle-btn"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
 
-        <input
-          style={styles.input}
-          type="date"
-          value={dob}
-          onChange={(e) => setDob(e.target.value)}
-          required
-        />
+            {password && (
+              <div className="meter-section">
+                <div className="strength-meter">
+                  <div className={`strength-bar ${strength.class}`}></div>
+                </div>
+                <p className="strength-text" style={{ color: strength.score === 3 ? '#2d6a4f' : '#666' }}>
+                  Strength: <strong>{strength.label}</strong>
+                </p>
+              </div>
+            )}
 
-        {error && <p style={styles.error}>{error}</p>}
+            {/* 🟢 Date of Birth Input */}
+            <Input
+              label="Date of Birth"
+              type="date"
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
+              required
+            />
 
-        <button style={styles.button} type="submit" disabled={loading}>
-          {loading ? "Creating Account..." : "Create Account"}
-        </button>
-      </form>
+            {error && <p className="signup-error">{error}</p>}
+
+            <button className="signup-button" type="submit" disabled={loading}>
+              Create Account
+            </button>
+          </form>
+
+          <p className="login-redirect">
+            Already have an account? <span onClick={() => navigate("/login")}>Login</span>
+          </p>
+        </>
+      )}
     </div>
   );
-};
-
-const styles = {
-  container: {
-    margin: "0 auto",
-    padding: "40px",
-    maxWidth: "400px",
-    textAlign: "center",
-    backgroundColor: "#f6fff0",
-    borderRadius: "10px",
-  },
-  title: {
-    marginBottom: "20px",
-    color: "#2a5c2a",
-    fontSize: "24px",
-    fontWeight: "bold",
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "15px",
-  },
-  input: {
-    padding: "12px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
-    fontSize: "16px",
-  },
-  button: {
-    padding: "12px",
-    border: "none",
-    borderRadius: "5px",
-    backgroundColor: "#3b7c3b",
-    color: "white",
-    fontSize: "16px",
-    cursor: "pointer",
-  },
-  error: {
-    color: "red",
-    fontSize: "14px",
-  },
 };
 
 export default SignUp;
