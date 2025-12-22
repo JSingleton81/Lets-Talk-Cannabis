@@ -29,7 +29,9 @@ const Login = () => {
 
     try {
       // 1. Authenticate with Firebase
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const trimmedEmail = email.trim();
+      const trimmedPassword = password.trim();
+      const userCredential = await signInWithEmailAndPassword(auth, trimmedEmail, trimmedPassword);
       const firebaseUser = userCredential.user;
 
       // 2. The Handshake: Sync with MySQL Backend
@@ -54,8 +56,9 @@ const Login = () => {
         throw new Error(data.message || "Backend login failed.");
       }
 
-      // 3. Success: Store JWT and User Data
-      localStorage.setItem("token", data.token);
+      // 3. Get Firebase ID Token and store it
+      const firebaseToken = await userCredential.user.getIdToken();
+      localStorage.setItem("token", firebaseToken);
       localStorage.setItem("user", JSON.stringify(data.user));
 
       // 4. Redirect to dashboard

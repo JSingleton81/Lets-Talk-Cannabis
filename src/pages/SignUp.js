@@ -54,7 +54,9 @@ const SignUp = () => {
 
     try {
       setLoading(true);
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const trimmedEmail = email.trim();
+      const trimmedPassword = password.trim();
+      const userCredential = await createUserWithEmailAndPassword(auth, trimmedEmail, trimmedPassword);
       const firebaseUser = userCredential.user;
 
       const res = await fetch(`${API_URL}/auth/register`, {

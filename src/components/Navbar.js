@@ -1,38 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth } from "../firebase"; // Ensure your firebase config is imported
+import { auth } from "../firebase"; 
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import "../styles/Navbar.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+  // Initialize as null to avoid "flickering" guest links during load
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Listen for Auth changes to keep Navbar in sync
+  // 1. Listen for Firebase Auth changes directly
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      const token = localStorage.getItem("token");
-      setIsLoggedIn(!!user && !!token);
+      setCurrentUser(user);
+      setLoading(false);
     });
     return () => unsubscribe();
   }, []);
 
   const handleLogout = async () => {
     try {
-      // 1. Clear Local Storage
+      // Clear everything to be safe
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       
-      // 2. Sign out from Firebase
       await signOut(auth);
-      
-      // 3. UI Update
-      setIsLoggedIn(false);
       navigate("/login");
     } catch (error) {
       console.error("Logout Error:", error);
     }
   };
+
+  // Prevent showing wrong links while Firebase is checking the session
+  if (loading) return <nav className="navbar"><div className="nav-logo">Loading...</div></nav>;
 
   return (
     <nav className="navbar">
@@ -43,7 +44,8 @@ const Navbar = () => {
       <div className="nav-links">
         <Link className="nav-item" to="/">Home</Link>
 
-        {isLoggedIn ? (
+        {currentUser ? (
+          /* Links for Authenticated Users */
           <>
             <Link className="nav-item" to="/dashboard">Dashboard</Link>
             <Link className="nav-item" to="/feed">Feed</Link>
@@ -52,6 +54,7 @@ const Navbar = () => {
             <button className="logout-btn" onClick={handleLogout}>Logout</button>
           </>
         ) : (
+          /* Links for Guests */
           <>
             <Link className="nav-item" to="/signup">Sign Up</Link>
             <Link className="nav-item" to="/login">Login</Link>
