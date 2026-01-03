@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PersonaVerifyButton from "../components/PersonaVerifyButton";
+import { auth } from "../firebase";
 import "../styles/Verification.css";
 
 /**
@@ -12,9 +13,6 @@ import "../styles/Verification.css";
 const Verification = () => {
   // Pull API URL from environment variables (defaults to localhost:5000)
   const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
-  
-  // Retrieve the JWT token stored during login to authenticate requests
-  const token = localStorage.getItem("token");
 
   // Local State
   const [status, setStatus] = useState("pending"); // 'pending', 'approved', or 'rejected'
@@ -27,6 +25,9 @@ const Verification = () => {
    */
   const fetchVerificationStatus = async () => {
     try {
+      // 🔄 Get fresh token with "kid" claim
+      const token = await auth.currentUser?.getIdToken(true);
+      
       if (!token) {
         setError("You must be logged in to view this page.");
         setLoading(false);
@@ -46,9 +47,16 @@ const Verification = () => {
         throw new Error(data.message || "Failed to load verification status");
       }
 
-      // Update state with status from MySQL
-      // Expected values: 'pending', 'approved', 'rejected'
-      setStatus(data?.user?.verification_status || "pending");
+      // 🟢 Access the columns shown in your MySQL screenshot
+      const statusFromDB = data?.user?.verification_status; // 'pending', 'approved', or 'rejected'
+      const isVerified = !!data?.user?.is_verified_21;      // 0 or 1 converted to boolean
+      
+      setStatus(statusFromDB || "pending");
+
+      // If the user just became verified, move them to the feed automatically
+      if (isVerified) {
+        window.location.href = "/feed";
+      }
     } catch (err) {
       console.error("Fetch Status Error:", err);
       setError(err.message);
@@ -78,7 +86,7 @@ const Verification = () => {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [status, token]);
+  }, [status]);
 
   /**
    * Helper: renderStatus
@@ -135,7 +143,6 @@ const Verification = () => {
 
             <div className="btn-wrapper">
               <PersonaVerifyButton 
-                token={token} 
                 onComplete={() => fetchVerificationStatus()} 
               />
             </div>

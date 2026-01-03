@@ -7,7 +7,7 @@ const ProtectedRoute = ({ children, requireVerification = false }) => {
   const { isAuthenticated, isVerified21, loading } = useAuth(); // Ensure useAuth provides isVerified21
   const location = useLocation();
 
-  // 1️⃣ Loading state
+  // 1️⃣ Loading state - ALWAYS wait for auth to load before rendering anything
   if (loading) {
     return <Loader />;
   }
@@ -18,9 +18,9 @@ const ProtectedRoute = ({ children, requireVerification = false }) => {
   }
 
   // 3️⃣ Logged in BUT not verified (and the route requires it)
-  // This redirects them to the Dashboard to complete their ID check
+  // Send them to the verification hub to complete Persona
   if (requireVerification && !isVerified21) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/verify-identity" replace state={{ from: location }} />;
   }
 
   // 4️⃣ Success -> Render the page

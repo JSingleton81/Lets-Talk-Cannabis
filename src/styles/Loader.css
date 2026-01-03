@@ -1,0 +1,36 @@
+/* Loader Component Styles */
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #2e7d32; /* Cannabis Green */
+  border-radius: 50%;
+  margin: 20px auto;
+  animation: spin 1s linear infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0; /* Hide "Loading..." text, show only spinner */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Alternative loader with text */
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.loader-text {
+  margin-top: 15px;
+  color: #2e7d32;
+  font-weight: 600;
+  font-size: 1rem;
+}

@@ -13,10 +13,21 @@ const Navbar = () => {
   // 1. Listen for Firebase Auth changes directly
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      console.debug("[Navbar] Auth state changed:", user?.email);
       setCurrentUser(user);
       setLoading(false);
     });
-    return () => unsubscribe();
+
+    // Safety timeout in case Firebase check hangs
+    const timeout = setTimeout(() => {
+      console.debug("[Navbar] Auth check timeout; showing UI while Firebase initializes");
+      setLoading(false);
+    }, 2000);
+
+    return () => {
+      unsubscribe();
+      clearTimeout(timeout);
+    };
   }, []);
 
   const handleLogout = async () => {

@@ -3,6 +3,7 @@ import { auth } from "../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import Input from "../components/Input"; // 🟢 Reusable Component
+import { requestPermissionAndSyncToken } from "../utils/notificationService";
 import "../styles/SignUp.css";
 
 const SignUp = () => {
@@ -15,7 +16,7 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+  const API_BASE = (process.env.REACT_APP_API_URL || "http://localhost:5000").replace(/\/$/, "");
 
   const getPasswordStrength = (pass) => {
     if (!pass) return { score: 0, label: "", class: "" };
@@ -59,24 +60,58 @@ const SignUp = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, trimmedEmail, trimmedPassword);
       const firebaseUser = userCredential.user;
 
-      const res = await fetch(`${API_URL}/auth/register`, {
+      // ✅ FORCE a fresh ID Token with the "kid" claim
+      const freshToken = await firebaseUser.getIdToken(true);
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s safety timeout
+
+      const res = await fetch(`${API_BASE}/auth/register`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": `Bearer ${freshToken}`, // Send the fresh JWT
+          "ngrok-skip-browser-warning": "true",
+        },
         body: JSON.stringify({
           username,
           email,
           uid: firebaseUser.uid,
           dob,
         }),
+        signal: controller.signal,
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Backend synchronization failed.");
+      clearTimeout(timeoutId);
+
+      let data;
+      const contentType = res.headers.get("content-type") || "";
+      if (contentType.includes("application/json")) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+        throw new Error(
+          `Backend returned non-JSON response (${res.status}). ${text?.slice(0, 200)}`
+        );
+      }
+
+      if (!res.ok) {
+        throw new Error(
+          data?.message || `Internal server error during registration sync (status ${res.status}).`
+        );
+      }
 
       if (data.token) {
+        // 💾 Store session data for the /auth/me polling we added to Verification.js
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        navigate("/dashboard");
+        
+        // 🔔 SYNC: Links the device to the user in MySQL for the "Verified" push notification
+        await requestPermissionAndSyncToken(firebaseUser.uid, API_BASE);
+        
+        // 🚀 GATEWAY: Sends the user to the dedicated Persona page we just built
+        navigate("/verify-identity");
       }
     } catch (err) {
       console.error("🔥 Signup Process Error:", err);
@@ -103,7 +138,10 @@ const SignUp = () => {
             {/* 🟢 Using your new Input component for Username */}
             <Input
               label="Username"
+              id="signup-username"
+              name="username"
               placeholder="Pick a community name"
+              autoComplete="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
@@ -112,8 +150,11 @@ const SignUp = () => {
             {/* 🟢 Using your new Input component for Email */}
             <Input
               label="Email Address"
+              id="signup-email"
+              name="email"
               type="email"
               placeholder="email@example.com"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -123,8 +164,11 @@ const SignUp = () => {
             <div className="password-wrapper">
               <Input
                 label="Password"
+                id="signup-password"
+                name="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Choose a password"
+                autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -152,7 +196,10 @@ const SignUp = () => {
             {/* 🟢 Date of Birth Input */}
             <Input
               label="Date of Birth"
+              id="signup-dob"
+              name="dob"
               type="date"
+              autoComplete="bday"
               value={dob}
               onChange={(e) => setDob(e.target.value)}
               required

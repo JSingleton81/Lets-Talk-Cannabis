@@ -1,12 +1,13 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "./hooks/useAuth";
 
 // Pages
 import Home from "./pages/Home";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Verification from "./pages/Verification";
+import VerifyIdentity from "./pages/VerifyIdentity"; // ✅ Dual-template version (ID + Selfie)
 import Feed from "./pages/Feed";
 import Chat from "./pages/Chat";
 import Profile from "./pages/Profile";
@@ -16,6 +17,8 @@ import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
+  const { isAuthenticated, isVerified21 } = useAuth();
+
   return (
     <>
       {/* Global Navigation */}
@@ -28,11 +31,11 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
 
-        {/* --- PROTECTED ROUTES (Login Required) --- */}
+        {/* --- PROTECTED ROUTES (Login Required + Verification Required) --- */}
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requireVerification={true}>
               <Dashboard />
             </ProtectedRoute>
           }
@@ -41,25 +44,24 @@ function App() {
         <Route
           path="/profile"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requireVerification={true}>
               <Profile />
             </ProtectedRoute>
           }
         />
 
+        {/* --- PROTECTED ROUTES (Login Required) --- */}
+        {/* Verification status/Persona entry point */}
         <Route
-          path="/verification"
+          path="/verify-identity"
           element={
             <ProtectedRoute>
-              <Verification />
+              <VerifyIdentity />
             </ProtectedRoute>
           }
         />
 
         {/* --- VERIFIED ROUTES (Login + ID Verified 21+ Required) --- */}
-        {/* We use the 'requireVerification' prop to trigger the
-            redirect logic in your ProtectedRoute component.
-        */}
         <Route
           path="/feed"
           element={

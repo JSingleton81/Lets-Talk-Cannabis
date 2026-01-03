@@ -3,6 +3,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import Input from "../components/Input"; // 🟢 Reusable Component
+import { requestPermissionAndSyncToken } from "../utils/notificationService";
 import "../styles/Login.css";
 
 const Login = () => {
@@ -57,11 +58,15 @@ const Login = () => {
       }
 
       // 3. Get Firebase ID Token and store it
-      const firebaseToken = await userCredential.user.getIdToken();
+      // 🔄 Passing 'true' ensures the token includes the "kid" claim
+      const firebaseToken = await userCredential.user.getIdToken(true);
       localStorage.setItem("token", firebaseToken);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      // 4. Redirect to dashboard
+      // 4. Request notification permission and sync FCM token with backend
+      await requestPermissionAndSyncToken(firebaseUser.uid, API_URL);
+
+      // 5. Redirect to dashboard
       navigate("/dashboard");
       
     } catch (err) {
@@ -86,8 +91,11 @@ const Login = () => {
         {/* 🟢 Reusable Input for Email */}
         <Input
           label="Email Address"
+          id="login-email"
+          name="email"
           type="email"
           placeholder="email@example.com"
+          autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -96,8 +104,11 @@ const Login = () => {
         {/* 🟢 Reusable Input for Password */}
         <Input
           label="Password"
+          id="login-password"
+          name="password"
           type="password"
           placeholder="Enter your password"
+          autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required

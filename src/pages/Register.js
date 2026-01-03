@@ -97,25 +97,34 @@ const Register = () => {
 
       <form className="register-form" onSubmit={handleRegister}>
         <input
+          id="register-email"
+          name="email"
           className="register-input"
           type="email"
           placeholder="Email Address"
+          autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
         <input
+          id="register-password"
+          name="password"
           className="register-input"
           type="password"
           placeholder="Password (6+ characters)"
+          autoComplete="new-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
         <input
+          id="register-confirm-password"
+          name="confirmPassword"
           className="register-input"
           type="password"
           placeholder="Confirm Password"
+          autoComplete="new-password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required

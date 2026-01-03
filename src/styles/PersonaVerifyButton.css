@@ -1,0 +1,58 @@
+/* PersonaVerifyButton Component Styles */
+
+.persona-action-btn {
+  margin-top: 10px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: #2a5c2a;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+}
+
+.persona-action-btn:hover:not(:disabled) {
+  background-color: #1b4332;
+  transform: translateY(-1px);
+}
+
+.persona-action-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.persona-action-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Loading state for button */
+.persona-action-btn.loading {
+  position: relative;
+  color: transparent;
+}
+
+.persona-action-btn.loading::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 50%;
+  margin-left: -8px;
+  margin-top: -8px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spinner 0.6s linear infinite;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
+import { getMessaging, getToken } from "firebase/messaging";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -23,8 +24,16 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
+// Initialize Firebase Cloud Messaging
+let messaging = null;
 if (typeof window !== "undefined") {
-  try { getAnalytics(app); } catch (e) {}
+  try {
+    getAnalytics(app);
+    messaging = getMessaging(app);
+  } catch (e) {
+    console.warn("Firebase Messaging or Analytics not available:", e.message);
+  }
 }
 
+export { messaging, getToken };
 export default app;
