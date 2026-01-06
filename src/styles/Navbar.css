@@ -1,55 +1,108 @@
-/* src/styles/Navbar.css */
-
-.navbar {
+/* Main Layout */
+.garden-navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 40px;
-  background-color: #2a5c2a; /* Slightly darker cannabis green */
-  color: white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  position: sticky; /* Keeps navbar at the top while scrolling */
+  padding: 0 40px;
+  background-color: #2a5c2a;
+  height: 70px;
+  position: sticky;
   top: 0;
   z-index: 1000;
 }
 
-.nav-logo {
-  margin: 0;
-  font-size: 1.5rem;
+/* Left side items */
+.nav-left {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Right side items */
+.nav-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.logo-text {
+  color: white;
+  font-weight: 700;
+  font-size: 1.4rem;
   letter-spacing: 1px;
 }
 
-.nav-links {
+/* Center Links */
+.nav-center {
   display: flex;
   align-items: center;
 }
 
-.nav-item {
-  margin-left: 20px;
+.nav-links {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+.nav-links a {
   color: white;
   text-decoration: none;
   font-weight: 600;
-  transition: color 0.3s ease;
+  transition: opacity 0.2s;
 }
 
-.nav-item:hover {
-  color: #a8d5a8; /* Light green highlight on hover */
+.nav-links a:hover {
+  opacity: 0.8;
 }
 
-/* Special styling for the Logout button */
-.logout-btn {
+/* Mobile Adjustments */
+@media (max-width: 900px) {
+  .nav-links {
+    display: none; /* Hide standard links on mobile to use hamburger */
+  }
+}
+
+/* Sidebar & Close Button Fixes */
+.menu-window {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 300px;
+  height: 100vh;
+  background-color: #1f4a1f;
+  transition: left 0.3s ease-in-out;
+  z-index: 2001;
+  padding: 20px;
+}
+
+.menu-window.active {
+  left: 0;
+}
+
+.menu-header {
+  display: flex;
+  justify-content: flex-start; /* Keeps X on the left side of the sidebar */
+  margin-bottom: 40px;
+}
+
+.menu-close-x {
   background: none;
-  border: 1px solid white;
+  border: none;
   color: white;
-  padding: 5px 12px;
-  border-radius: 5px;
+  font-size: 3rem;
   cursor: pointer;
-  font-weight: bold;
-  margin-left: 20px;
-  transition: all 0.3s ease;
+  line-height: 1;
+  padding: 10px; /* Provides breathing room so it doesn't hit the edge */
 }
 
-.logout-btn:hover {
+/* Mobile Hamburger bars */
+.hamburger .bar {
+  width: 30px;
+  height: 3px;
   background-color: white;
-  color: #2a5c2a;
+  margin: 5px 0;
+  border-radius: 2px;
 }

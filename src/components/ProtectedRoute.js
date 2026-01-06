@@ -1,10 +1,10 @@
-import React from "react";
-import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
-import Loader from "./Loader";
+import React from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import Loader from './Loader';
 
 const ProtectedRoute = ({ children, requireVerification = false }) => {
-  const { isAuthenticated, isVerified21, loading } = useAuth(); // Ensure useAuth provides isVerified21
+  const { isAuthenticated, isVerified21, loading } = useAuth();
   const location = useLocation();
 
   // 1️⃣ Loading state - ALWAYS wait for auth to load before rendering anything
@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children, requireVerification = false }) => {
     return <Loader />;
   }
 
-  // 2️⃣ Not Logged In -> Go to Login
+  // 2️⃣ Not logged in -> redirect to login
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }

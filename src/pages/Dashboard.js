@@ -66,6 +66,8 @@ const Dashboard = () => {
         <form onSubmit={handlePost}>
           <textarea
             className="post-textarea"
+            id="dashboard-post"
+            name="dashboardPost"
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
             placeholder="Share an insight..."

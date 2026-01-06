@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 
 // Pages
@@ -11,6 +11,12 @@ import VerifyIdentity from "./pages/VerifyIdentity"; // ✅ Dual-template versio
 import Feed from "./pages/Feed";
 import Chat from "./pages/Chat";
 import Profile from "./pages/Profile";
+import AboutMe from "./pages/AboutMe";
+import PublicStash from "./pages/PublicStash"; // Public stash view
+import StrainDetail from "./pages/StrainDetail"; // Strain detail page
+
+import CategoryExplorer from "./pages/CategoryExplorer";
+import CategoriesPage from "./pages/Categories";
 
 // Components
 import Navbar from "./components/Navbar";
@@ -30,6 +36,13 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/about" element={<AboutMe />} />
+        <Route path="/strain/:strainId" element={<StrainDetail />} />
+        <Route path="/category/:type" element={<CategoryExplorer />} />
+        <Route path="/categories" element={<CategoriesPage />} />
+
+        {/* 🌿 Public Stash (read-only, no auth required) */}
+        <Route path="/public-stash/:uid" element={<PublicStash />} />
 
         {/* --- PROTECTED ROUTES (Login Required + Verification Required) --- */}
         <Route
@@ -43,6 +56,15 @@ function App() {
 
         <Route
           path="/profile"
+          element={
+            <ProtectedRoute requireVerification={true}>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/my-stash"
           element={
             <ProtectedRoute requireVerification={true}>
               <Profile />

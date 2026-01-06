@@ -1,0 +1,414 @@
+/* ========================
+   StrainDetail Page Styles
+   ======================== */
+
+.strain-detail-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* Back Button */
+.back-btn {
+  background: #f5f5f5;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #2a5c2a;
+  cursor: pointer;
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.back-btn:hover {
+  background: #2a5c2a;
+  color: white;
+}
+
+/* Layout Grid */
+.strain-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+}
+
+/* Main Content Column */
+.strain-detail-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Strain Hero Section */
+.strain-hero {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  height: 400px;
+  background: #f5f5f5;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.strain-detail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.strain-header-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%);
+  padding: 2rem;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.strain-name {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.strain-type-badge {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid white;
+  color: white;
+  backdrop-filter: blur(10px);
+}
+
+.strain-type-badge.hybrid {
+  background: rgba(100, 150, 100, 0.8);
+}
+
+.strain-type-badge.sativa {
+  background: rgba(255, 200, 100, 0.8);
+}
+
+.strain-type-badge.indica {
+  background: rgba(100, 150, 200, 0.8);
+}
+
+/* Strain Sections */
+.strain-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.strain-section h2 {
+  font-size: 1.5rem;
+  color: #1b3c1b;
+  margin: 0 0 1rem 0;
+  font-weight: 700;
+}
+
+.strain-section h3 {
+  font-size: 1.2rem;
+  color: #2a5c2a;
+  margin: 0 0 0.8rem 0;
+  font-weight: 700;
+}
+
+/* Description Section */
+.description-section p {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #555;
+}
+
+/* Terpene Section */
+.terpene-section {
+  padding: 2rem;
+}
+
+.terpene-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.terpene-item {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+.terpene-name {
+  font-weight: 600;
+  color: #2a5c2a;
+  font-size: 0.95rem;
+}
+
+.terpene-bar {
+  height: 12px;
+  background: #f0f0f0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.terpene-fill {
+  height: 100%;
+  transition: width 0.5s ease;
+  opacity: 0.8;
+}
+
+.terpene-notes {
+  grid-column: 2;
+  font-size: 0.9rem;
+  color: #888;
+  margin: 0.5rem 0 0 0;
+  font-style: italic;
+}
+
+/* Effects & Flavor Section */
+.effects-flavor-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.effects-column,
+.flavor-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.tag-effect {
+  background: linear-gradient(135deg, #2a5c2a 0%, #3b7c3b 100%);
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.tag-flavor {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: #333;
+  padding: 0.6rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Cannabinoid Section */
+.cannabinoid-section {
+  padding: 2rem;
+}
+
+.cannabinoid-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.cannabinoid-item {
+  background: linear-gradient(135deg, #f9f9f9 0%, #f5f5f5 100%);
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+  border: 2px solid #2a5c2a;
+}
+
+.cbd-label {
+  display: block;
+  font-weight: 700;
+  color: #2a5c2a;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.cbd-value {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1b3c1b;
+}
+
+/* Action Row */
+.action-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.favorite-btn {
+  background: #f5f5f5;
+  color: #2a5c2a;
+  border: 2px solid #2a5c2a;
+}
+
+.favorite-btn:hover {
+  background: #2a5c2a;
+  color: white;
+}
+
+.favorite-btn.favorited {
+  background: #2a5c2a;
+  color: white;
+  border-color: #2a5c2a;
+}
+
+.share-btn {
+  background: linear-gradient(135deg, #2a5c2a 0%, #3b7c3b 100%);
+  color: white;
+}
+
+.share-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(42, 92, 42, 0.3);
+}
+
+/* Sidebar Column */
+.strain-detail-sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Loading and Error States */
+.strain-detail-loading,
+.strain-detail-error,
+.strain-detail-notfound {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  font-size: 1.2rem;
+  color: #666;
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+.strain-detail-error,
+.strain-detail-notfound {
+  color: #c33;
+}
+
+/* --- RESPONSIVE DESIGN --- */
+@media (max-width: 1024px) {
+  .strain-detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .strain-detail-sidebar {
+    order: -1;
+  }
+
+  .strain-hero {
+    height: 350px;
+  }
+
+  .effects-flavor-section {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .strain-detail-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .strain-hero {
+    height: 300px;
+  }
+
+  .strain-header-overlay {
+    padding: 1.5rem;
+  }
+
+  .strain-name {
+    font-size: 1.8rem;
+  }
+
+  .strain-section {
+    padding: 1.5rem;
+  }
+
+  .strain-section h2 {
+    font-size: 1.3rem;
+  }
+
+  .cannabinoid-row {
+    grid-template-columns: 1fr;
+  }
+
+  .action-row {
+    flex-direction: column;
+  }
+
+  .action-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .strain-detail-container {
+    padding: 1rem;
+  }
+
+  .strain-hero {
+    height: 250px;
+  }
+
+  .strain-name {
+    font-size: 1.5rem;
+  }
+
+  .strain-section {
+    padding: 1rem;
+  }
+
+  .strain-section h2 {
+    font-size: 1.1rem;
+  }
+
+  .terpene-item {
+    grid-template-columns: 80px 1fr;
+  }
+
+  .tags-list {
+    gap: 0.4rem;
+  }
+
+  .tag-effect,
+  .tag-flavor {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+}

@@ -12,6 +12,9 @@ const Feed = () => {
   const { user, isVerified21 } = useAuth(); // Hook to gate the posting privileges
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState("");
+  const [taggedStrain, setTaggedStrain] = useState("");
+  const [availableStrains, setAvailableStrains] = useState([]);
+  const [selectedStrain, setSelectedStrain] = useState("");
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -30,8 +33,17 @@ const Feed = () => {
           "ngrok-skip-browser-warning": "true" 
         },
       });
-      
-      const data = await response.json();
+      console.log("Raw response:", response);
+      const text = await response.text();
+      console.log("Raw response text:", text);
+      let data;
+      try {
+        data = JSON.parse(text);
+        console.log("Parsed data:", data);
+      } catch (err) {
+        console.error("[Feed] JSON parse error:", err, text);
+        data = [];
+      }
       if (Array.isArray(data)) setPosts(data);
     } catch (err) {
       console.error("[Feed] Fetch error:", err);
@@ -46,8 +58,8 @@ const Feed = () => {
    */
   const handlePost = async (e) => {
     e.preventDefault();
-    if (!newPost.trim() || isSubmitting) return;
-    
+    if (!isVerified21 || !newPost.trim() || isSubmitting) return;
+
     setIsSubmitting(true);
     try {
       const token = await auth.currentUser.getIdToken(true);
@@ -58,11 +70,15 @@ const Feed = () => {
           "Content-Type": "application/json",
           "ngrok-skip-browser-warning": "true"
         },
-        body: JSON.stringify({ content: newPost.trim() })
+        body: JSON.stringify({ 
+          content: newPost.trim(),
+          strain_id: selectedStrain // Connects post to MySQL strain ID
+        })
       });
 
       if (response.ok) {
         setNewPost(""); // Clear the input
+        setSelectedStrain(""); // Clear the dropdown
         fetchPosts(); // 🔄 Refresh the list to show the new post instantly
       }
     } catch (err) {
@@ -74,6 +90,44 @@ const Feed = () => {
 
   useEffect(() => {
     fetchPosts();
+    // Fetch strain names for dropdown
+    const fetchStrainNames = async () => {
+      try {
+        const response = await fetch(`${API_BASE}/api/strains/names`, {
+          headers: { "ngrok-skip-browser-warning": "true" }
+        });
+        console.log("Raw strains response:", response);
+        // Check if response is empty or invalid
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`Backend returned ${response.status}: ${errorText}`);
+          setAvailableStrains([]);
+          return;
+        }
+
+        // Capture the text first to see what it actually is
+        const text = await response.text();
+        console.log("Raw strains response text:", text);
+        if (!text) {
+          console.error("Server returned an empty body.");
+          setAvailableStrains([]);
+          return;
+        }
+
+        try {
+          const data = JSON.parse(text);
+          console.log("Parsed strains data:", data);
+          setAvailableStrains(Array.isArray(data) ? data : []);
+        } catch (err) {
+          console.error("Frontend Fetch Error (invalid JSON):", err, text);
+          setAvailableStrains([]);
+        }
+      } catch (err) {
+        console.error("Frontend Fetch Error:", err);
+        setAvailableStrains([]);
+      }
+    };
+    fetchStrainNames();
   }, []);
 
   if (loading) return <Loader />;
@@ -87,11 +141,25 @@ const Feed = () => {
         <form onSubmit={handlePost}>
           <textarea
             className="post-textarea"
+            id="feed-post"
+            name="feedPost"
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
             placeholder="Share an insight with the community..."
             disabled={!isVerified21 || isSubmitting}
           />
+          <select
+            className="strain-select-dropdown"
+            value={selectedStrain}
+            onChange={e => setSelectedStrain(e.target.value)}
+            disabled={!isVerified21 || isSubmitting}
+            style={{ marginBottom: '10px', width: '100%', borderRadius: '8px', border: '1px solid #ddd', padding: '10px', fontSize: '1rem' }}
+          >
+            <option value="">Tag a strain (optional)</option>
+            {availableStrains.map(strain => (
+              <option key={strain.id} value={strain.id}>{strain.name}</option>
+            ))}
+          </select>
           <button 
             className="post-submit-btn" 
             disabled={!isVerified21 || isSubmitting}

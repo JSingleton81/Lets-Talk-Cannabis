@@ -154,10 +154,13 @@ const VerifyIdentity = () => {
     <div className="verification-container">
       <div className="verification-card">
         {isProcessing ? (
-          <div className="processing-status">
-            <h2>🌿 Finalizing Access...</h2>
-            <p>Syncing your status with the community garden.</p>
-            <div className="spinner"></div> 
+          <div className="processing-status success-animation">
+            <div className="check-icon">✓</div>
+            <h2>🌿 You're In!</h2>
+            <p>Identity verified. Unlocking the 21+ community feed...</p>
+            <div className="progress-bar">
+              <div className="progress-fill"></div>
+            </div>
           </div>
         ) : (
           <>

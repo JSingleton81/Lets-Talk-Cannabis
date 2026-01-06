@@ -1,76 +1,103 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { auth } from "../firebase"; 
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import "../styles/Navbar.css";
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { auth } from '../firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import '../styles/Navbar.css';
 
 const Navbar = () => {
-  const navigate = useNavigate();
-  // Initialize as null to avoid "flickering" guest links during load
   const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
-  // 1. Listen for Firebase Auth changes directly
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.debug("[Navbar] Auth state changed:", user?.email);
       setCurrentUser(user);
-      setLoading(false);
     });
-
-    // Safety timeout in case Firebase check hangs
-    const timeout = setTimeout(() => {
-      console.debug("[Navbar] Auth check timeout; showing UI while Firebase initializes");
-      setLoading(false);
-    }, 2000);
-
-    return () => {
-      unsubscribe();
-      clearTimeout(timeout);
-    };
+    return () => unsubscribe();
   }, []);
 
   const handleLogout = async () => {
     try {
-      // Clear everything to be safe
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      
       await signOut(auth);
-      navigate("/login");
+      setMenuOpen(false);
+      navigate('/login');
     } catch (error) {
-      console.error("Logout Error:", error);
+      console.error('Logout error:', error);
     }
   };
 
-  // Prevent showing wrong links while Firebase is checking the session
-  if (loading) return <nav className="navbar"><div className="nav-logo">Loading...</div></nav>;
-
   return (
-    <nav className="navbar">
-      <Link to="/" className="nav-logo-link">
-        <h2 className="nav-logo">Let's Talk Cannabis</h2>
-      </Link>
-      
-      <div className="nav-links">
-        <Link className="nav-item" to="/">Home</Link>
+    <nav className="garden-navbar">
+      {/* 🍔 LEFT: Hamburger (Visible only on mobile) */}
+      <div className="nav-left">
+        <div className="hamburger" onClick={() => setMenuOpen(true)}>
+          <div className="bar"></div>
+          <div className="bar"></div>
+          <div className="bar"></div>
+        </div>
+      </div>
 
-        {currentUser ? (
-          /* Links for Authenticated Users */
-          <>
-            <Link className="nav-item" to="/dashboard">Dashboard</Link>
-            <Link className="nav-item" to="/feed">Feed</Link>
-            <Link className="nav-item" to="/chat">Chat</Link>
-            <Link className="nav-item" to="/profile">Profile</Link>
-            <button className="logout-btn" onClick={handleLogout}>Logout</button>
-          </>
-        ) : (
-          /* Links for Guests */
-          <>
-            <Link className="nav-item" to="/signup">Sign Up</Link>
-            <Link className="nav-item" to="/login">Login</Link>
-          </>
-        )}
+      {/* 🔗 CENTER/RIGHT: Restoration of Desktop Links */}
+      <div className="nav-center">
+        <div className="nav-links">
+          <Link to="/">Home</Link>
+          <Link to="/about">About</Link>
+          {currentUser ? (
+            <>
+              <Link to="/feed">Feed</Link>
+              <Link to= "/chat">Chat</Link>
+              <Link to="/profile">Profile</Link>
+              <button onClick={handleLogout} className="logout-btn">
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link to="/login" className="login-pill">
+              Login / Verify
+            </Link>
+          )}
+        </div>
+      </div>
+
+      {/* 🌿 RIGHT: Garden Logo */}
+      <div className="nav-right" onClick={() => navigate("/")}>
+        <span className="logo-text">Lets-Talk-Cannabis</span>
+        <span className="logo-icon">🌿</span>
+      </div>
+
+      {/* 🚪 LEFT SLIDING SIDEBAR */}
+      <div className={`menu-window ${menuOpen ? "active" : ""}`}>
+        <div className="menu-header">
+          {/* ❌ The Close Button - Positioned carefully to avoid cutoff */}
+          <button className="menu-close-x" onClick={() => setMenuOpen(false)}>
+            &times;
+          </button>
+        </div>
+
+        <div className="menu-links">
+          <Link to="/" onClick={() => setMenuOpen(false)}>
+            Home
+          </Link>
+          <Link to="/about" onClick={() => setMenuOpen(false)}>
+            About
+          </Link>
+          {currentUser && (
+            <>
+              <Link to="/feed" onClick={() => setMenuOpen(false)}>
+                Feed
+              </Link>
+              <Link to="/categories" onClick={() => setMenuOpen(false)}>
+                Categories
+              </Link>
+              <Link to="/profile" onClick={() => setMenuOpen(false)}>
+                My Profile
+              </Link>
+              <button onClick={handleLogout} className="menu-logout-btn">
+                Log Out
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );

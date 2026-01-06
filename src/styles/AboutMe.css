@@ -1,0 +1,274 @@
+.profile-page {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #ffffff;
+  padding: 16px 20px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  border: 1px solid #eef2f5;
+}
+
+.avatar-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2e7d32, #66bb6a);
+  color: white;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 1.8rem;
+  overflow: hidden;
+}
+
+.avatar-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.header-info h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #1b5e20;
+}
+
+.member-date {
+  margin: 4px 0;
+  color: #4a4a4a;
+}
+
+.v-badge {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  margin-left: 8px;
+  border: 1px solid #c8e6c9;
+}
+
+.divider {
+  margin: 20px 0;
+  border: none;
+  border-top: 1px solid #e5e7eb;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 20px;
+}
+
+.profile-sidebar,
+.profile-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bio-card,
+.taste-card,
+.stash-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  border: 1px solid #eef2f5;
+  padding: 16px;
+}
+
+.bio-card h3,
+.taste-card h3,
+.stash-card h3 {
+  margin: 0;
+  color: #1b5e20;
+}
+
+.bio-card p {
+  margin: 8px 0 0 0;
+  color: #444;
+  line-height: 1.5;
+}
+
+.location-line {
+  color: #2e7d32;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.pill {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: 1px solid #c8e6c9;
+}
+
+.terpene-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.terpene-row {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 10px;
+  border: 1px solid #eef2f5;
+}
+
+.terpene-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.terp-name {
+  font-weight: 700;
+  color: #1b5e20;
+}
+
+.terp-count {
+  font-weight: 700;
+  color: #2e7d32;
+}
+
+.terp-bar {
+  height: 8px;
+  background: #e8f5e9;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+.terp-fill {
+  height: 100%;
+  background: #2e7d32;
+}
+
+.terp-meta {
+  color: #4a4a4a;
+  font-size: 0.9rem;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.stat {
+  background: #f8f9fa;
+  border: 1px solid #eef2f5;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.stat-value {
+  font-weight: 800;
+  color: #1b5e20;
+}
+
+.stash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.stash-item {
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #eef2f5;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stash-top {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.type-chip,
+.terp-chip {
+  padding: 4px 8px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.type-chip.sativa { background: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; }
+.type-chip.indica { background: #f3e5f5; color: #6a1b9a; border: 1px solid #e1bee7; }
+.type-chip.hybrid { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; }
+.type-chip.unknown { background: #eceff1; color: #455a64; border: 1px solid #cfd8dc; }
+
+.terp-chip {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.stash-name {
+  font-weight: 800;
+  color: #1b5e20;
+}
+
+.stash-meta {
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.muted {
+  color: #666;
+}
+
+@media (max-width: 960px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .profile-page {
+    padding: 12px;
+  }
+
+  .stash-grid {
+    grid-template-columns: 1fr;
+  }
+}

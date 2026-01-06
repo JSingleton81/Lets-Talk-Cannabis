@@ -2,7 +2,12 @@ import React from 'react';
 import '../styles/Loader.css';
 
 const Loader = () => {
-  return <div className="spinner">Loading...</div>;
+  return (
+    <div className="loader-container">
+      <div className="spinner"></div>
+      <p className="loading-text">Tending the Garden...</p>
+    </div>
+  );
 };
 
-export default Loader; // 🟢 Must have this line!
+export default Loader;

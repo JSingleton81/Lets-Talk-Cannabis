@@ -1,39 +1,41 @@
-import React from "react";
-import "../styles/PostCard.css"; 
+import React from 'react';
+import '../styles/PostCard.css';
 
-const PostCard = ({ post }) => {
-  // Format the date to be human-readable
-  const formattedDate = new Date(post.created_at).toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
+const PostCard = ({ post, onFavorite, onShowTerpene }) => {
+  // Convert MySQL timestamp to a friendly format
+  const formattedDate = new Date(post.created_at).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
   });
 
   return (
     <div className="post-card">
       <div className="post-header">
-        <div className="author-info">
-          <span className="post-username">{post.username}</span>
-          
-          {/* Display the green checkmark if the author is 21+ verified */}
-          {(post.is_verified_21 === 1 || post.is_verified_21 === true) && (
-            <span className="verified-badge" title="21+ Verified Member">
-              <span className="checkmark-icon">✓</span>
-            </span>
-          )}
-        </div>
-        <span className="post-timestamp">{formattedDate}</span>
+        <span className="post-author">{post.username || 'Jams81'}</span>
+        <span className="post-date">{formattedDate || 'Dec 25'}</span>
       </div>
-
+      <div className="post-image-wrapper">
+        {post.image_url && (
+          <img src={post.image_url} alt="User Post" className="post-main-img" />
+        )}
+      </div>
       <div className="post-content">
-        <p>{post.content}</p>
+        <p>{post.content || 'we good'}</p>
       </div>
-
       <div className="post-footer">
-        {/* Future home for Likes/Comments buttons */}
-        <button className="footer-action-btn">Like</button>
-        <button className="footer-action-btn">Comment</button>
+        <button 
+          className="favorite-btn" 
+          onClick={() => onFavorite(post.id)}
+        >
+          ❤️ {post.likes_count || 0}
+        </button>
+        <div 
+          className="strain-tag" 
+          onClick={() => onShowTerpene && onShowTerpene(post.primary_terpene)}
+          style={{ cursor: 'pointer' }}
+        >
+          🌿 {post.strain_name} • <span className="terpene-preview">{post.primary_terpene}</span>
+        </div>
       </div>
     </div>
   );

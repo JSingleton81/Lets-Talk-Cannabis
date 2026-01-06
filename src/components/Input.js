@@ -1,17 +1,17 @@
-// src/components/Input.js
 import React from 'react';
 import '../styles/Input.css';
 
-const toSlug = (str) =>
-  (str || "field")
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-");
+const Input = ({ label, type = 'text', error, id, name, ...props }) => {
+  const toSlug = (str) =>
+    (str || 'field')
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-');
 
-const Input = ({ label, type = "text", error, id, name, ...props }) => {
   const inputId = id || `input-${toSlug(label)}`;
   const inputName = name || toSlug(label);
+
   return (
     <div className="input-wrapper" style={{ marginBottom: '1rem' }}>
       {label && (
@@ -19,21 +19,21 @@ const Input = ({ label, type = "text", error, id, name, ...props }) => {
           {label}
         </label>
       )}
-      <input 
-        type={type} 
-        style={{ 
-          width: '100%', 
-          padding: '10px', 
+      <input
+        type={type}
+        style={{
+          width: '100%',
+          padding: '10px',
           border: error ? '1px solid red' : '1px solid #ccc',
           borderRadius: '4px'
-        }} 
+        }}
         id={inputId}
         name={inputName}
-        {...props} 
+        {...props}
       />
       {error && <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>{error}</p>}
     </div>
   );
 };
 
-export default Input; // 🟢 Default export to avoid import errors
+export default Input;

@@ -1,23 +1,23 @@
-import React, { useState } from "react";
-import "../styles/PersonaVerifyButton.css";
+import React, { useState } from 'react';
+import '../styles/PersonaVerifyButton.css';
 
 /**
- * PersonaVerifyButton (Legacy/Alternative Method)
- * --------------------------------------------
+ * PersonaVerifyButton
+ * ----------------------------------------
  * 1. Calls your backend to create a secure Inquiry ID.
  * 2. Launches the Persona Modal using the global window.Persona object.
  */
 const PersonaVerifyButton = ({ userId, token, onComplete }) => {
   const [loading, setLoading] = useState(false);
-  
+
   // 📡 API Configuration: Handles local vs production URLs
-  const API_URL = (process.env.REACT_APP_API_URL || "http://localhost:5000").replace(/\/$/, "");
+  const API_URL = (process.env.REACT_APP_API_URL || 'http://localhost:5000').replace(/\/$/, '');
 
   const startVerification = async () => {
     // 🛡️ The crash happens if window.Persona is checked during the render phase
     // Ensure it is only accessed inside this async click handler
-    if (typeof window === "undefined" || !window.Persona) {
-      alert("Verification module is still loading. Please wait a moment.");
+    if (typeof window === 'undefined' || !window.Persona) {
+      alert('Verification module is still loading. Please wait a moment.');
       return;
     }
 
@@ -30,16 +30,16 @@ const PersonaVerifyButton = ({ userId, token, onComplete }) => {
        * We use the JWT token to authenticate the request.
        */
       const res = await fetch(`${API_URL}/verify/persona/start`, {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}` // ✅ Added token for security
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // ✅ Added token for security
         },
         body: JSON.stringify({ firebaseUid: userId }),
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Backend error");
+      if (!res.ok) throw new Error(data.message || 'Backend error');
 
       /**
        * 2. INITIALIZE PERSONA CLIENT
@@ -54,23 +54,22 @@ const PersonaVerifyButton = ({ userId, token, onComplete }) => {
         onComplete: (inquiryId) => {
           console.log(`✅ Verification finished: ${inquiryId}`);
           // 🔄 Trigger status refresh in the Hub or Dashboard
-          if (onComplete) onComplete(); 
+          if (onComplete) onComplete();
         },
         onCancel: () => {
           setLoading(false);
-          console.log("User closed the verification modal.");
+          console.log('User cancelled verification');
         },
         onError: (error) => {
           setLoading(false);
-          console.error("Persona SDK Error:", error);
-          alert("An error occurred during verification setup.");
+          console.error('Persona error:', error);
+          alert('Verification failed. Please try again.');
         },
       });
-
-    } catch (err) {
+    } catch (error) {
       setLoading(false);
-      console.error("Verification Start Error:", err);
-      alert(err.message || "Failed to start verification");
+      console.error('Error starting verification:', error);
+      alert('Could not start verification: ' + error.message);
     }
   };
 
@@ -78,30 +77,20 @@ const PersonaVerifyButton = ({ userId, token, onComplete }) => {
     <button
       onClick={startVerification}
       disabled={loading}
-      className="persona-action-btn" // ✅ Suggested for CSS consistency
+      className="persona-action-btn"
       style={{
-        ...styles.button,
-        backgroundColor: loading ? "#cccccc" : "#2a5c2a",
-        cursor: loading ? "not-allowed" : "pointer",
+        marginTop: '10px',
+        padding: '10px 20px',
+        backgroundColor: loading ? '#cccccc' : '#2a5c2a',
+        color: 'white',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: loading ? 'not-allowed' : 'pointer',
       }}
     >
-      {loading ? "Preparing..." : "Verify My Identity"}
+      {loading ? 'Starting Verification...' : 'Verify Identity (21+)'}
     </button>
   );
-};
-
-// 🎨 Inline Styles (Keep for quick styling, or move to Verification.css)
-const styles = {
-  button: {
-    marginTop: "10px",
-    padding: "12px 20px",
-    borderRadius: "8px",
-    border: "none",
-    color: "white",
-    fontSize: "16px",
-    fontWeight: "600",
-    transition: "background-color 0.2s ease",
-  },
 };
 
 export default PersonaVerifyButton;

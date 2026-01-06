@@ -1,0 +1,46 @@
+.stash-cta-footer {
+  margin-top: 80px;
+  padding: 60px 20px;
+  background-color: #f1f8e9; /* Light garden green */
+  border-top: 2px solid #c8e6c9;
+  text-align: center;
+}
+
+.cta-content h2 {
+  color: #1b5e20;
+  margin-bottom: 15px;
+}
+
+.cta-content p {
+  max-width: 600px;
+  margin: 0 auto 30px auto;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.btn-main {
+  padding: 15px 35px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  background-color: #2a5c2a;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-main:hover {
+  background-color: #1b5e20;
+  transform: translateY(-2px);
+}
+
+.btn-main:active {
+  transform: translateY(0);
+}
+
+.copyright {
+  margin-top: 30px;
+  font-size: 0.9rem;
+  color: #888;
+}

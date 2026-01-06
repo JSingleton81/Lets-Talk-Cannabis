@@ -1,0 +1,80 @@
+/* Search Bar Styling */
+.search-bar-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.garden-search-input {
+  width: 100%;
+  max-width: 500px;
+  padding: 15px 25px;
+  border-radius: 50px;
+  border: 2px solid #e2e8f0;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.garden-search-input:focus {
+  border-color: #2e7d32;
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.15);
+}
+/* Container for the entire categorized garden view */
+.garden-category-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* 🧭 The Tab Bar: Styled to look like a premium segmented control */
+.category-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 40px;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(8px);
+  padding: 10px;
+  border-radius: 50px;
+  border: 1px solid #e2e8f0;
+}
+
+/* Individual Tab Buttons */
+.tab-btn {
+  padding: 12px 24px;
+  border: none;
+  background: transparent;
+  color: #4a5568;
+  font-weight: 600;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Active State: Uses your "Garden Green" branding */
+.active-tab {
+  background-color: #2e7d32;
+  color: white;
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+}
+
+.tab-btn:hover:not(.active-tab) {
+  background: rgba(46, 125, 50, 0.1);
+  color: #2e7d32;
+}
+
+/* 🗂️ Grid Layout for connected PostCards */
+.strain-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
