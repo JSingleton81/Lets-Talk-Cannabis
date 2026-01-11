@@ -17,9 +17,6 @@ const TEMPLATE_ID = process.env.REACT_APP_PERSONA_TEMPLATE_ID;
 const PERSONA_ENVIRONMENT_ID = process.env.REACT_APP_PERSONA_ENVIRONMENT_ID;
 const API_URL = process.env.REACT_APP_API_URL;
 
-// 🔍 Debug: Log template IDs and environment to verify they're loaded
-console.log("Template ID:", TEMPLATE_ID);
-console.log("Persona Environment ID:", PERSONA_ENVIRONMENT_ID);
 
 // 🟢 Single inquiry template flow (ID + Selfie combined)
 const VerifyIdentity = () => {

@@ -8,53 +8,64 @@
 /* 🧭 Header with Back Navigation */
 .explorer-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column; /* Better for mobile stacking */
+  align-items: flex-start;
+  gap: 15px;
   margin-bottom: 40px;
   border-bottom: 2px solid #e2e8f0;
   padding-bottom: 20px;
 }
 
+@media (min-width: 768px) {
+  .explorer-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
 .explorer-header h1 {
   color: #1b5e20;
   font-size: 2rem;
-  text-transform: capitalize;
+  margin: 0;
 }
 
-.back-btn {
-  background: #2e7d32;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.2s;
-}
-
-.back-btn:hover { background: #1b5e20; }
-
-/* 🗂️ The Master Grid: Organized display of MySQL data */
+/* 🗂️ The Master Grid: Organized display of unique MySQL data */
 .explorer-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Larger minimum for card detail */
   gap: 30px;
 }
 
-.explorer-card {
-  background: white;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-  text-align: center;
-  transition: transform 0.2s;
+/* 🌟 Top Pick Glow: Highlights high-rated strains from MySQL */
+.top-pick-glow {
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4) !important;
+  border: 1px solid rgba(255, 215, 0, 0.6);
 }
 
-.explorer-card:hover { transform: translateY(-5px); }
+/* Wrapper to handle click interaction */
+.explorer-card-wrapper {
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
 
-.explorer-card img {
+.explorer-card-wrapper:hover {
+  transform: translateY(-8px);
+}
+
+/* Adjustments for PostCard inside the explorer context */
+.explorer-grid .post-card {
   width: 100%;
-  height: 180px;
-  object-fit: contain;
-  margin-bottom: 15px;
+  margin: 0; /* Reset margins from Home feed */
+}
+
+/* 📱 Responsive Adjustments */
+@media (max-width: 480px) {
+  .explorer-grid {
+    grid-template-columns: 1fr; /* Single column on small phones */
+  }
+  
+  .explorer-header h1 {
+    font-size: 1.5rem;
+  }
 }

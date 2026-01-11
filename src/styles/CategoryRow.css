@@ -1,4 +1,8 @@
-/* --- SECTION LAYOUT --- */
+/* ============================================================
+   CATEGORY ROW / CAROUSEL STYLING
+   Optimized for horizontal scrolling and high-quality visuals.
+   ============================================================ */
+
 .category-section {
   margin: 40px 0;
   padding: 0 20px;
@@ -13,36 +17,38 @@
 }
 
 .category-title {
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 700;
   color: #1a1a1a;
   margin: 0;
 }
 
-/* 🔗 VIEW ALL: Navigates to a full category page (e.g., all Indicas) */
+/* 🔗 VIEW ALL: Navigates to a full category page */
 .view-all-btn {
   background: none;
   border: none;
-  color: #22c55e;
+  color: #2ecc71;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  padding: 8px 0;
-  transition: opacity 0.2s;
+  padding: 8px 12px;
+  border-radius: 20px;
+  transition: background 0.2s;
 }
 
 .view-all-btn:hover {
-  opacity: 0.8;
+  background: rgba(46, 204, 113, 0.1);
 }
 
-/* ↔️ SCROLL CONTAINER: Manages the horizontal carousel for strain cards */
+/* ↔️ SCROLL CONTAINER: Manages the horizontal carousel */
 .horizontal-scroll-container {
   display: flex;
   gap: 20px;
   overflow-x: auto; /* Enables side-scrolling */
-  padding-bottom: 15px;
-  scroll-snap-type: x mandatory; /* Snaps cards into position on mobile */
-  scrollbar-width: none; /* Hides default scrollbar for a cleaner look */
+  padding: 10px 5px 20px;
+  scroll-snap-type: x mandatory; /* ✅ Snaps cards into position */
+  scrollbar-width: none; /* Hides default scrollbar for Firefox */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
 }
 
 /* Hides scrollbar for Chrome/Safari */
@@ -50,89 +56,93 @@
   display: none;
 }
 
-/* 🎴 MINI CARD: Compact version of the strain data for the Home feed */
+/* 🎴 MINI CARD: Optimized for Leafly HD Imagery */
 .strain-card-mini {
-  flex: 0 0 220px; /* Forces fixed card width in the flex container */
+  flex: 0 0 240px; /* Consistent card width */
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  scroll-snap-align: start;
-  transition: transform 0.2s;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  scroll-snap-align: start; /* ✅ Works with scroll-snap-type */
+  transition: all 0.3s ease;
   overflow: hidden;
   cursor: pointer;
+  border: 1px solid #f0f0f0;
 }
 
 .strain-card-mini:hover {
-  transform: translateY(-5px); /* Visual feedback on hover */
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
 }
 
 /* --- CARD CONTENT --- */
 .strain-image-wrapper {
   position: relative;
-  height: 140px;
+  height: 160px; /* Fixed height for consistent rows */
+  background: #f8faf8;
 }
 
 .strain-card-img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Ensures images fill space without distortion */
-  border-radius: 12px 12px 0 0;
+  object-fit: cover; /* ✅ Prevents Leafly images from stretching */
 }
 
-/* 🏷️ TYPE TAGS: Dynamic colors based on MySQL strain type */
+/* 🏷️ TYPE TAGS: Color-coded based on MySQL 'type' */
 .type-tag {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  background: rgba(34, 197, 94, 0.9);
+  top: 10px;
+  right: 10px;
   color: white;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 8px;
-  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 30px;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-.type-tag.indica { background: rgba(139, 92, 246, 0.9); }
-.type-tag.sativa { background: rgba(249, 115, 22, 0.9); }
-.type-tag.hybrid { background: rgba(59, 130, 246, 0.9); }
+.type-tag.indica { background: #8e44ad; }
+.type-tag.sativa { background: #f39c12; }
+.type-tag.hybrid { background: #3498db; }
 
 .strain-card-details {
-  padding: 12px;
+  padding: 15px;
 }
 
 .strain-card-details h4 {
-  margin: 0 0 6px 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: #1a1a1a;
-  white-space: nowrap; /* Keeps names on one line */
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #2c3e50;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* 🧬 TERPENE LINK: Triggers the educational legend modal */
-.terpene-detail.clickable {
-  cursor: pointer;
-  color: #22c55e;
-  font-weight: 600;
-  font-size: 12px;
-  transition: all 0.2s;
-}
-
-.terpene-detail.clickable:hover {
-  color: #16a34a;
-  text-decoration: underline;
-}
-
-/* ⭐ RATING: Small pill for the MySQL rating score */
-.rating-pill {
+/* 🧬 TERPENE PILL: Triggers the Legend Modal */
+.terpene-detail-pill {
   display: inline-block;
+  background: #f0f2f0;
+  color: #27ae60;
+  padding: 4px 10px;
+  border-radius: 6px;
   font-size: 12px;
-  color: #22c55e;
   font-weight: 600;
-  background: #f0fdf4;
-  padding: 4px 8px;
-  border-radius: 4px;
-  margin-top: 5px;
+  margin-bottom: 10px;
+  transition: background 0.2s;
+}
+
+.terpene-detail-pill:hover {
+  background: #e2e8e2;
+}
+
+/* ⭐ RATING PILL: Highlights the high-rated Leafly picks */
+.rating-pill {
+  font-size: 13px;
+  color: #f1c40f;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }

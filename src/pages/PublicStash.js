@@ -87,7 +87,20 @@ const PublicStash = () => {
         {stash.map((strain, index) => (
           <div key={index} className="strain-card">
             <div className="strain-image-wrapper">
-              <img src={strain.image_url || '/leaf-placeholder.png'} alt={strain.name} />
+              <img
+                src={
+                  strain.image_url
+                    ? (strain.image_url.startsWith('http')
+                        ? strain.image_url
+                        : `/${strain.image_url}`)
+                    : "https://img.icons8.com/color/96/marijuana-leaf.png"
+                }
+                alt={strain.name}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://img.icons8.com/color/96/marijuana-leaf.png";
+                }}
+              />
               <span className={`type-badge ${strain.type?.toLowerCase()}`}>{strain.type}</span>
             </div>
             <div className="strain-info">

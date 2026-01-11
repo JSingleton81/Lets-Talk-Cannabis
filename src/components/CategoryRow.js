@@ -1,77 +1,161 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../styles/CategoryRow.css';
-import TerpeneLegend from './TerpeneLegend';
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../styles/CategoryRow.css";
+import TerpeneLegend from "./TerpeneLegend";
 
-const CategoryRow = ({ title, strains, onFindMatches }) => {
-    const navigate = useNavigate();
+/**
+ * CategoryRow
+ * - Shows a horizontal row of strain cards
+ * - Images:
+ *   - REAL Leafly URLs -> go through backend proxy: /api/img?url=...
+ *   - Local paths -> /path
+ *   - Missing/placeholder -> fallback icon (ONLY when truly missing/placeholder)
+ *
+ * IMPORTANT:
+ * - Do NOT add cache-busters to Leafly URLs unless we confirm Leafly requires it.
+ * - Fallback should only happen when:
+ *    (A) image_url is missing/placeholder, OR
+ *    (B) the image request fails (onError)
+ */
 
-    const handleViewAll = () => {
-      // Navigate to the explorer page for the specific category
-      navigate(`/category/${title.split(' ').pop().toLowerCase()}`);
-    };
+const FALLBACK_IMG = "https://img.icons8.com/color/96/marijuana-leaf.png";
+
+// ✅ Only treat these as placeholders (do NOT match generic "leaf")
+const isPlaceholderImage = (url) => {
+  if (!url || typeof url !== "string") return true;
+
+  const u = url.toLowerCase();
+  return (
+    u.includes("default-leaf") ||
+    u.includes("/flower-images/default") ||
+    u.includes("placeholder") ||
+    u.includes("no-image")
+  );
+};
+
+const CategoryRow = ({ title, strains = [], onFindMatches }) => {
+  const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTerpene, setSelectedTerpene] = useState(null);
 
   /**
-   * 🧬 handleTerpeneClick:
-   * Triggers the educational modal and connects to the MySQL matching logic.
-   * Prevents interaction if the terpene data is missing.
+   * ✅ API_BASE
+   * - In local dev, set REACT_APP_API_BASE=http://localhost:5000
+   * - On GitHub Pages, you typically also set it to your deployed backend URL
+   * - If it's empty, it will try same-origin (not what you want on GH pages)
    */
+  const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5000";
+
+  const categoryType = useMemo(() => {
+    const lastWord = (title || "").trim().split(/\s+/).pop()?.toLowerCase();
+    if (lastWord === "sativas" || lastWord === "sativa") return "Sativa";
+    if (lastWord === "indicas" || lastWord === "indica") return "Indica";
+    if (lastWord === "hybrids" || lastWord === "hybrid") return "Hybrid";
+    return "Hybrid";
+  }, [title]);
+
+  // Dev log once
+  const didLogRef = useRef(false);
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "development") return;
+    if (didLogRef.current) return;
+    didLogRef.current = true;
+
+    console.log(
+      `[CategoryRow] ${title}: ${strains.length} strains (type=${categoryType})`
+    );
+  }, [title, strains.length, categoryType]);
+
+  const handleViewAll = () => navigate(`/category/${categoryType}`);
+
   const handleTerpeneClick = (terpene) => {
-    if (terpene && terpene !== 'Unknown Terpene') {
-      setSelectedTerpene(terpene);
+    const t = (terpene || "").trim();
+    if (t && t !== "Unknown Terpene") {
+      setSelectedTerpene(t);
       setModalOpen(true);
-      // We don't automatically trigger onFindMatches here so the user can 
-      // read the legend first, then click "Find Strains" inside the modal.
     }
+  };
+
+  const formatRating = (rating) => {
+    const n = Number(rating);
+    if (!Number.isFinite(n) || n <= 0) return "N/A";
+    return n.toFixed(1);
+  };
+
+  /**
+   * ✅ Image resolver (single source of truth)
+   * - placeholder/missing => fallback
+   * - http(s) => backend proxy (NO cache-buster)
+   * - local path => normalized
+   */
+  const getImageSrc = (imageUrl) => {
+    if (isPlaceholderImage(imageUrl)) return FALLBACK_IMG;
+
+    if (typeof imageUrl === "string" && imageUrl.startsWith("http")) {
+      return `${API_BASE}/api/img?url=${encodeURIComponent(imageUrl)}`;
+    }
+
+    return imageUrl.startsWith("/") ? imageUrl : `/${imageUrl}`;
   };
 
   return (
     <div className="category-section">
-      {/* 🏷️ Row Header: Includes the 'View All' link from your screenshot */}
       <div className="category-header">
         <h2 className="category-title">{title}</h2>
-        <button className="view-all-btn" onClick={handleViewAll}>View All</button>
+        <button className="view-all-btn" onClick={handleViewAll}>
+          View All
+        </button>
       </div>
-      
-      {/* ↔️ Horizontal Scroll: Matches the sliding carousel behavior */}
+
       <div className="horizontal-scroll-container">
-        {strains && strains.map((strain) => (
-          <div key={strain.id} className="strain-card-mini">
+        {strains.map((strain) => (
+          <div
+            key={strain.id}
+            className="strain-card-mini"
+            onClick={() => navigate(`/strain/${strain.id}`)}
+            style={{ cursor: "pointer" }}
+          >
             <div className="strain-image-wrapper">
-              <img 
-                src={strain.image_url || '/assets/default-leaf.png'} 
-                alt={strain.name} 
+              <img
+                src={getImageSrc(strain.image_url)}
+                alt={strain.name}
                 className="strain-card-img"
+                onError={(e) => {
+                  // ✅ Fallback ONLY when the request actually fails
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = FALLBACK_IMG;
+                }}
               />
-              {/* Type Badge: Color-coded via CSS (Sativa/Indica/Hybrid) */}
+
               <span className={`type-tag ${strain.type?.toLowerCase()}`}>
                 {strain.type}
               </span>
             </div>
-            
+
             <div className="strain-card-details">
               <h4>{strain.name}</h4>
-              
-              {/* Interactive Terpene Tag: Connects to the Legend Modal */}
-              <p 
+
+              <p
                 className="terpene-detail-pill"
-                onClick={() => handleTerpeneClick(strain.primary_terpene)}
-                style={{ cursor: strain.primary_terpene ? 'pointer' : 'default' }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleTerpeneClick(strain.primary_terpene);
+                }}
+                style={{
+                  cursor: strain.primary_terpene ? "pointer" : "default",
+                }}
               >
-                {strain.primary_terpene || 'Unknown Terpene'}
+                {strain.primary_terpene || "Unknown Terpene"}
               </p>
-              
-              <div className="rating-pill">⭐ {strain.rating || 'N/A'}</div>
+
+              <div className="rating-pill">⭐ {formatRating(strain.rating)}</div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* 🛡️ Terpene Legend: The educational bridge between data and user */}
-      <TerpeneLegend 
-        isOpen={modalOpen} 
+      <TerpeneLegend
+        isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         selectedTerpene={selectedTerpene}
         onFindMatches={onFindMatches}

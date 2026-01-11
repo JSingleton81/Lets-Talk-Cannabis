@@ -1,4 +1,45 @@
-/* --- SIDEBAR MENU LINKS --- */
+/* ============================================================
+   HOME LAYOUT & GLOBAL NAVIGATION
+   ============================================================ */
+
+/* --- 🧭 SIDEBAR MENU (Z-Index Protection) --- */
+.menu-window {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  padding: 100px 20px 40px;
+  z-index: 2001; /* 🛡️ Prevents Navbar/X-sign overlap */
+  box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+  background-color: #1b5e20; /* Dark garden theme for sidebar */
+  position: fixed;
+  left: -300px; /* Hidden by default */
+  top: 0;
+  width: 300px;
+  height: 100%;
+  transition: left 0.3s ease-in-out;
+}
+
+.menu-window.open {
+  left: 0; /* Slides in from left */
+}
+
+.close-btn {
+  top: 30px;
+  left: 30px; /* Matches left-side orientation */
+  font-size: 2.5rem;
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  cursor: pointer;
+}
+
+/* --- 🔗 SIDEBAR LINKS --- */
 .menu-links {
   text-align: center;
   width: 100%;
@@ -8,7 +49,7 @@
 
 .menu-links li {
   list-style: none;
-  margin: 30px 0;
+  margin: 20px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 10px;
 }
@@ -23,33 +64,19 @@
 }
 
 .menu-links a:hover, .menu-links .logout-link:hover {
-  color: #b2dfdb;
+  color: #b2dfdb; /* Soft teal highlight */
 }
 
-.logout-link {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.3rem;
-  color: #fff;
-  padding: 10px 0;
-  width: 100%;
-  text-align: center;
-}
-/* --- HERO SECTION CENTERING --- */
+/* --- 🏠 HERO SECTION REFINEMENT --- */
 .hero {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 100px 20px 120px; /* Extra bottom padding for the search overlap */
+  padding: 80px 20px 100px; 
   background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
   border-bottom: 1px solid rgba(46, 125, 50, 0.1);
-}
-
-.hero-content {
-  width: 100%;
-  max-width: 800px;
 }
 
 .hero h1 {
@@ -59,72 +86,6 @@
   margin-bottom: 15px;
 }
 
-/* --- SEARCH BAR OVERLAP --- */
-.global-search-bar {
-  margin: -30px auto 40px; /* Pulls search bar up into the hero section */
-  width: 90%;
-  max-width: 650px;
-  position: relative;
-  z-index: 10;
-}
-
-.global-search-bar input {
-  width: 100%;
-  height: 60px;
-  border-radius: 50px;
-  border: none;
-  padding: 0 30px;
-  font-size: 1.1rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); /* Adds depth and "pop" */
-  outline: none;
-}
-
-/* --- TAB AREA ALIGNMENT --- */
-.tab-discovery-area {
-  display: flex;
-  justify-content: center;
-  padding: 20px 5% 60px;
-  background-color: #f8faf8; /* Matches the lower garden background */
-}
-/* --- HERO & SEARCH WRAPPER --- */
-.home-hero-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Centers the content horizontally */
-  text-align: center;
-  padding: 60px 20px;
-  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-}
-
-.home-hero-section h1 {
-  font-size: 3rem;
-  color: #1b5e20;
-  margin-bottom: 10px;
-}
-/* ============================================================
-   HOME LAYOUT & GLOBAL SEARCH
-   ============================================================ */
-
-/* --- HERO SECTION REFINEMENT --- */
-.hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;    /* Centers items horizontally */
-  justify-content: center; /* Centers items vertically */
-  text-align: center;      /* Centers the text lines */
-  padding: 80px 20px 100px; 
-  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-  border-bottom: 1px solid rgba(46, 125, 50, 0.1);
-}
-
-.hero h1 {
-  font-size: 3rem;
-  font-weight: 800;
-  color: #1b5e20;
-  margin-bottom: 10px;
-  width: 100%;
-}
-
 .hero p {
   font-size: 1.2rem;
   color: #2e7d32;
@@ -132,98 +93,31 @@
   max-width: 600px;
 }
 
-/* --- SEARCH BAR CENTERING --- */
-.global-search-bar {
-  width: 100%;
-  max-width: 600px;
-  margin: -30px auto 40px; /* Overlaps hero for a modern look */
-  position: relative;
-  z-index: 10;
-}
-
-.global-search-bar input {
-  width: 100%;
-  height: 60px;
-  padding: 0 60px 0 30px;
+/* --- 🔘 TAB ACTION BUTTONS --- */
+.tab-btn {
+  padding: 12px 28px;
   border-radius: 50px;
-  border: 1px solid rgba(46, 125, 50, 0.2);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08); /* Adds depth to the search bar */
-  font-size: 1.1rem;
-  outline: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 2px solid #2e7d32;
+  color: #2e7d32;
+  background: white;
 }
 
-/* ❌ Clear Search Button inside input */
-.clear-search-btn {
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: #999;
-  cursor: pointer;
+.tab-btn.active-tab {
+  background-color: #2e7d32;
+  color: white;
 }
 
-/* 🖼️ Search Results View */
-.search-results-view {
-  padding: 40px 5%;
-  animation: fadeIn 0.4s ease-out;
+.tab-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
 }
 
-.search-results-view h2 {
-  color: var(--dark-garden);
-  margin-bottom: 30px;
-  font-size: 1.8rem;
-}
-
-/* ============================================================
-   CONTENT & NAVIGATION FIXES
-   ============================================================ */
+/* --- 📦 CONTENT CONTAINER --- */
 .home-content {
-  flex: 1;
   padding: 40px 5%;
-}
-
-.category-sections {
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 40px;
 }
-
-/* 🛡️ Sidebar Z-Index: Prevents Navbar/X-sign overlap */
-/* Sidebar refinement */
-.menu-window {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Centers the Home, About, Feed links */
-  padding: 100px 20px 40px;
-  z-index: 2001;
-  box-shadow: -10px 0 30px rgba(0,0,0,0.2);
-}
-.menu-links {
-  text-align: center;
-  width: 100%;
-}
-
-.menu-links li {
-  margin: 30px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 10px;
-}
-
-.close-btn {
-  top: 30px;
-  left: 30px; /* Moved to match your Left-side hamburger orientation */
-  font-size: 3rem;
-  background: rgba(0,0,0,0.1); /* Subtle circle background for the X */
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-}
-
-/* Rest of your existing :root and UI styles continue below... */

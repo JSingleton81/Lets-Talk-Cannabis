@@ -1,75 +1,162 @@
 .post-card {
-  background: #ffffff;
-  border: 1px solid #e1e8ed;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 16px;
-  transition: box-shadow 0.2s;
+  margin-bottom: 24px;
 }
 
 .post-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 24px rgba(44, 62, 80, 0.12), 0 1.5px 6px rgba(44, 62, 80, 0.08);
+  transform: translateY(-2px) scale(1.01);
+}
+
+.post-image-wrapper {
+  border-bottom: 1px solid #f0f0f0;
+  background: linear-gradient(180deg, #f9f9f9 60%, #e8f5e9 100%);
+}
+
+.post-main-img {
+  border-radius: 10px;
 }
 
 .post-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
-}
-
-.author-info {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  padding: 12px 15px 0 15px;
 }
 
 .post-username {
   font-weight: 700;
-  color: #1a1a1a;
-}
-
-.verified-badge {
-  background-color: #2ecc71; /* Cannabis/Identity Green */
-  color: white;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
+  color: #1b5e20;
+  font-size: 1rem;
 }
 
 .post-timestamp {
-  font-size: 12px;
-  color: #657786;
+  color: #888;
+  font-size: 0.85rem;
+  font-style: italic;
 }
+/* ============================================================
+   📦 POSTCARD UNIVERSAL STYLING
+   ============================================================ */
 
-.post-content p {
-  font-size: 15px;
-  line-height: 1.5;
-  color: #2c3e50;
-  margin: 0;
-}
-
-.post-footer {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid #f0f2f5;
+.post-card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #eee;
   display: flex;
-  gap: 15px;
+  flex-direction: column;
+  position: relative;
+}
+
+/* 🌟 TOP PICK BORDER: Matches your 5.0 rating in MySQL */
+.top-pick-border {
+  border: 2px solid #ffd700 !important;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+}
+
+/* 🏆 TOP PICK BADGE: Floating label */
+.top-pick-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #ffd700;
+  color: #1b5e20;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  z-index: 5;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* --- 🖼️ IMAGE ENGINE: Leafly Visuals --- */
+.post-image-wrapper {
+  width: 100%;
+  height: 200px;
+  background-color: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.post-main-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Prevents stretching of Leafly JPGs */
+  transition: transform 0.5s ease;
+}
+
+.post-card:hover .post-main-img {
+  transform: scale(1.05);
+}
+
+/* --- 📝 CONTENT AREA --- */
+.post-content {
+  padding: 15px;
+  flex-grow: 1;
+}
+
+.post-username {
+  font-weight: 700;
+  color: #1b5e20;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.type-text {
+  font-size: 0.9rem;
+  color: #666;
+  font-style: italic;
+  margin-bottom: 10px;
+}
+
+.strain-meta {
+  background: #f1f8e9;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+/* ⭐ RATING PILL: Unique data display */
+.rating-pill {
+  display: inline-block;
+  margin-top: 8px;
+  background: #2e7d32;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: bold;
+}
+
+/* --- 🔘 FOOTER ACTIONS --- */
+.post-footer {
+  padding: 12px 15px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .footer-action-btn {
   background: none;
   border: none;
-  color: #657786;
-  font-size: 13px;
+  color: #e91e63;
+  font-weight: 600;
   cursor: pointer;
-  padding: 0;
 }
 
-.footer-action-btn:hover {
-  color: #2ecc71;
+/* ✓ VERIFIED BADGE */
+.verified-badge {
+  background: #4caf50;
+  color: white;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
 }

@@ -9,6 +9,8 @@ const Dashboard = () => {
   const { user, loading, isVerified21 } = useAuth();
   const [newPost, setNewPost] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // New: State for tagged strain (simulate strain picker integration)
+  const [selectedStrain, setSelectedStrain] = useState(null); // { id, name, type, image_url }
   const API_BASE = (process.env.REACT_APP_API_URL || "http://localhost:5000").replace(/\/+$/, "");
 
   const handlePost = async (e) => {
@@ -25,7 +27,13 @@ const Dashboard = () => {
           "Content-Type": "application/json",
           "ngrok-skip-browser-warning": "true"
         },
-        body: JSON.stringify({ content: newPost.trim() })
+        body: JSON.stringify({
+          content: newPost.trim(),
+          strain_id: selectedStrain?.id || null,
+          strain_name: selectedStrain?.name || null,
+          strain_type: selectedStrain?.type || null,
+          strain_image_url: selectedStrain?.image_url || null
+        })
       });
 
       if (response.ok) {
@@ -73,6 +81,20 @@ const Dashboard = () => {
             placeholder="Share an insight..."
             disabled={!isVerified21}
           />
+          {/* Simulated Strain Picker UI (replace with your real picker) */}
+          <div style={{ margin: '10px 0' }}>
+            <button type="button" onClick={() => setSelectedStrain({ id: 1, name: 'Blue Dream', type: 'Sativa', image_url: '/images/blue-dream.jpg' })}>
+              Tag Blue Dream (Demo)
+            </button>
+            <button type="button" onClick={() => setSelectedStrain(null)} style={{ marginLeft: 8 }}>
+              Remove Tag
+            </button>
+            {selectedStrain && (
+              <div style={{ marginTop: 6, fontSize: 14 }}>
+                <strong>Tagged:</strong> {selectedStrain.name} ({selectedStrain.type})
+              </div>
+            )}
+          </div>
           <button className="post-submit-btn" disabled={!isVerified21 || isSubmitting}>
             {isSubmitting ? "Posting..." : "Post to Feed"}
           </button>
